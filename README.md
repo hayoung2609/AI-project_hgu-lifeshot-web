@@ -73,6 +73,27 @@ npm run dev
 
 응답은 `results` 배열입니다. 각 항목에는 최종 점수, NIMA 점수, 한동 감성 유사도, 랜드마크 정보, base64 annotated image가 포함됩니다.
 
+### `GET /leaderboard?limit=3`
+
+전체 사용자 점수 랭킹을 반환합니다. 사진 원본은 저장하지 않고 점수와 기본 메타데이터만 SQLite에 저장합니다.
+
+```json
+{
+  "results": [
+    {
+      "id": 1,
+      "image_name": "example.jpg",
+      "final_score": 92.3,
+      "aesthetic_score": 88.1,
+      "handong_similarity_score": 95.5,
+      "landmark_bonus": 8,
+      "landmark_class": "OH",
+      "created_at": "2026-05-26T08:00:00+00:00"
+    }
+  ]
+}
+```
+
 ## 점수 계산
 
 ```text
@@ -134,10 +155,12 @@ NEXT_PUBLIC_API_URL=https://백엔드주소.onrender.com
 | --- | --- | --- | --- |
 | frontend | `NEXT_PUBLIC_API_URL` | `http://localhost:8000` | FastAPI 백엔드 주소 |
 | backend | `CORS_ORIGINS` | `*` | 프론트엔드 요청을 허용할 Origin 목록 |
+| backend | `LEADERBOARD_DB_PATH` | `/app/data/leaderboard.sqlite3` | 전체 사용자 점수 랭킹 SQLite 저장 위치 |
 
 ## 주의사항
 
 - `.pt`, `.pth`, `.pkl` 파일은 용량이 클 수 있으니 GitHub에 직접 올리지 말고 Google Drive, Git LFS, Render Disk, 또는 배포 시 수동 업로드 방식을 사용하세요.
 - Render 무료 플랜은 서버가 잠든 뒤 첫 요청이 느릴 수 있습니다.
+- 전체 사용자 Top 3 점수는 기본적으로 `backend/data/leaderboard.sqlite3`에 저장됩니다. Render 무료 플랜의 ephemeral filesystem에서는 재시작/재배포 시 데이터가 사라질 수 있으므로, 실제 운영에서는 Render Disk, Supabase, PostgreSQL 같은 영구 저장소를 사용하세요.
 - CPU 환경에서도 동작하도록 구현했지만, NIMA와 YOLO 추론은 이미지 수가 많을수록 시간이 걸립니다.
 - 모델 파일이 없으면 `/predict`는 어떤 파일이 빠졌는지 알려주는 500 오류를 반환합니다.

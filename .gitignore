@@ -13,6 +13,9 @@ venv/
 # FastAPI temporary data
 uploads/
 tmp/
+backend/data/*.sqlite3
+backend/data/*.sqlite3-*
+backend/data/*.db
 
 # Environment
 .env

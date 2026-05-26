@@ -18,6 +18,17 @@ export type PredictionResult = {
   annotated_image_base64?: string;
 };
 
+export type LeaderboardEntry = {
+  id: number;
+  image_name: string;
+  final_score: number;
+  aesthetic_score: number;
+  handong_similarity_score: number;
+  landmark_bonus: number;
+  landmark_class: string | null;
+  created_at: string;
+};
+
 const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000";
 
 function getErrorMessage(payload: unknown, fallback: string) {
@@ -56,6 +67,28 @@ export async function predictImages(files: File[]): Promise<PredictionResult[]> 
   const results = (payload as { results?: PredictionResult[] } | null)?.results;
   if (!Array.isArray(results)) {
     throw new Error("백엔드 응답 형식이 올바르지 않습니다.");
+  }
+  return results;
+}
+
+export async function fetchLeaderboard(limit = 3): Promise<LeaderboardEntry[]> {
+  let response: Response;
+  try {
+    response = await fetch(`${API_URL}/leaderboard?limit=${limit}`, {
+      cache: "no-store",
+    });
+  } catch {
+    throw new Error("전체 랭킹을 불러올 수 없습니다.");
+  }
+
+  const payload = await response.json().catch(() => null);
+  if (!response.ok) {
+    throw new Error(getErrorMessage(payload, "전체 랭킹을 불러올 수 없습니다."));
+  }
+
+  const results = (payload as { results?: LeaderboardEntry[] } | null)?.results;
+  if (!Array.isArray(results)) {
+    throw new Error("전체 랭킹 응답 형식이 올바르지 않습니다.");
   }
   return results;
 }

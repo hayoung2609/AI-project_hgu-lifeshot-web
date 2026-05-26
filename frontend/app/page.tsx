@@ -1,16 +1,24 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { AlertCircle, Loader2, Wand2 } from "lucide-react";
 
+import GlobalLeaderboard from "@/components/GlobalLeaderboard";
 import ResultTable from "@/components/ResultTable";
 import TopThreeResults from "@/components/TopThreeResults";
 import UploadBox from "@/components/UploadBox";
-import { PredictionResult, predictImages } from "@/lib/api";
+import {
+  LeaderboardEntry,
+  PredictionResult,
+  fetchLeaderboard,
+  predictImages,
+} from "@/lib/api";
 
 export default function HomePage() {
   const [files, setFiles] = useState<File[]>([]);
   const [results, setResults] = useState<PredictionResult[]>([]);
+  const [leaderboard, setLeaderboard] = useState<LeaderboardEntry[]>([]);
+  const [leaderboardError, setLeaderboardError] = useState("");
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
@@ -18,6 +26,22 @@ export default function HomePage() {
     () => [...results].sort((a, b) => b.final_score - a.final_score),
     [results],
   );
+
+  const loadLeaderboard = async () => {
+    try {
+      const entries = await fetchLeaderboard(3);
+      setLeaderboard(entries);
+      setLeaderboardError("");
+    } catch (caught) {
+      const message =
+        caught instanceof Error ? caught.message : "전체 랭킹을 불러올 수 없습니다.";
+      setLeaderboardError(message);
+    }
+  };
+
+  useEffect(() => {
+    void loadLeaderboard();
+  }, []);
 
   const handlePredict = async () => {
     if (files.length === 0) {
@@ -30,6 +54,7 @@ export default function HomePage() {
     try {
       const response = await predictImages(files);
       setResults(response.sort((a, b) => b.final_score - a.final_score));
+      await loadLeaderboard();
     } catch (caught) {
       const message =
         caught instanceof Error ? caught.message : "알 수 없는 오류가 발생했습니다.";
@@ -54,6 +79,8 @@ export default function HomePage() {
           랜드마크 포함 여부를 종합하여 Top 3 인생샷을 추천합니다.
         </p>
       </header>
+
+      <GlobalLeaderboard entries={leaderboard} error={leaderboardError} />
 
       <UploadBox files={files} onFilesChange={setFiles} disabled={isLoading} />
 

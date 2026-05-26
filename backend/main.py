@@ -8,6 +8,7 @@ from fastapi import FastAPI, File, HTTPException, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 
 from inference import ALLOWED_EXTENSIONS, MAX_FILE_SIZE_BYTES, ModelFileMissingError, get_scorer
+from leaderboard import add_leaderboard_entries, get_top_leaderboard, init_leaderboard_db
 
 
 def _parse_origins() -> list[str]:
@@ -30,9 +31,19 @@ app.add_middleware(
 )
 
 
+@app.on_event("startup")
+def startup() -> None:
+    init_leaderboard_db()
+
+
 @app.get("/health")
 def health() -> dict[str, str]:
     return {"status": "ok"}
+
+
+@app.get("/leaderboard")
+def leaderboard(limit: int = 3) -> dict[str, list[dict]]:
+    return {"results": get_top_leaderboard(limit)}
 
 
 def _validate_upload(file: UploadFile) -> str:
@@ -93,4 +104,5 @@ async def predict(files: list[UploadFile] = File(...)) -> dict[str, list[dict]]:
                     detail=f"{safe_name} 평가 중 오류가 발생했습니다: {exc}",
                 ) from exc
 
+    add_leaderboard_entries(results)
     return {"results": results}
