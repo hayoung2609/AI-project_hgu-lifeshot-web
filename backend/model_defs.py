@@ -5,7 +5,7 @@ from typing import Any
 
 import torch
 from torch import nn
-from torchvision import models
+from torchvision.models.vgg import cfgs, make_layers
 
 
 class NIMAModel(nn.Module):
@@ -13,9 +13,8 @@ class NIMAModel(nn.Module):
 
     def __init__(self) -> None:
         super().__init__()
-        vgg16 = models.vgg16(weights=None)
-        self.features = vgg16.features
-        self.avgpool = vgg16.avgpool
+        self.features = make_layers(cfgs["D"], batch_norm=False)
+        self.avgpool = nn.AdaptiveAvgPool2d((7, 7))
         self.classifier = nn.Sequential(
             nn.Dropout(p=0.75),
             nn.Linear(25088, 10),
