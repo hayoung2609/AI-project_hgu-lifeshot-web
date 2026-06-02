@@ -25,12 +25,11 @@ function formatDate(value: string) {
 export default function GlobalLeaderboard({ entries, error }: GlobalLeaderboardProps) {
   return (
     <section className="mb-6 rounded-lg border border-slate-200 bg-white p-5 shadow-soft">
-      <div className="mb-4 flex items-center justify-between gap-3">
+      <div className="mb-4 flex items-center gap-2">
         <div className="flex items-center gap-2">
           <Trophy className="h-5 w-5 text-coral" aria-hidden />
           <h2 className="text-lg font-extrabold text-ink">전체 사용자 Top 3 점수</h2>
         </div>
-        <p className="hidden text-sm font-semibold text-slate-500 sm:block">사진 저장 없이 점수만 공개</p>
       </div>
 
       {error ? (

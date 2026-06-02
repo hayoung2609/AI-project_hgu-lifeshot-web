@@ -101,6 +101,19 @@ def get_top_leaderboard(limit: int = 3) -> list[dict[str, Any]]:
                 landmark_class,
                 created_at
             FROM leaderboard_entries
+            WHERE id IN (
+                SELECT id
+                FROM (
+                    SELECT
+                        id,
+                        ROW_NUMBER() OVER (
+                            PARTITION BY image_name
+                            ORDER BY final_score DESC, created_at ASC, id ASC
+                        ) AS rank_for_image
+                    FROM leaderboard_entries
+                )
+                WHERE rank_for_image = 1
+            )
             ORDER BY final_score DESC, created_at ASC
             LIMIT ?
             """,

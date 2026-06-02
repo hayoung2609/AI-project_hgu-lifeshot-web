@@ -4,7 +4,7 @@ import os
 import tempfile
 from pathlib import Path
 
-from fastapi import FastAPI, File, Header, HTTPException, UploadFile
+from fastapi import FastAPI, File, Header, HTTPException, Response, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 
 from inference import ALLOWED_EXTENSIONS, MAX_FILE_SIZE_BYTES, ModelFileMissingError, get_scorer
@@ -56,7 +56,8 @@ def root() -> dict[str, object]:
 
 
 @app.get("/leaderboard")
-def leaderboard(limit: int = 3) -> dict[str, list[dict]]:
+def leaderboard(response: Response, limit: int = 3) -> dict[str, list[dict]]:
+    response.headers["Cache-Control"] = "no-store"
     return {"results": get_top_leaderboard(limit)}
 
 
