@@ -45,11 +45,11 @@ export default function ResultTable({ results }: ResultTableProps) {
               <th className="px-4 py-3 text-right">최종</th>
               <th className="px-4 py-3 text-right">NIMA</th>
               <th className="px-4 py-3 text-right">1-10</th>
-              <th className="px-4 py-3 text-right">한동 감성</th>
-              <th className="px-4 py-3">랜드마크</th>
+              <th className="px-4 py-3 text-right">Handong Similarity</th>
+              <th className="px-4 py-3">Landmark</th>
               <th className="px-4 py-3 text-right">conf</th>
               <th className="px-4 py-3 text-right">bonus</th>
-              <th className="px-4 py-3">유사 기준 사진</th>
+              <th className="px-4 py-3">Similar References</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-100">
@@ -85,7 +85,7 @@ export default function ResultTable({ results }: ResultTableProps) {
                   <td className="px-4 py-3 text-right">
                     {formatNumber(result.handong_similarity_score)}
                   </td>
-                  <td className="px-4 py-3">{result.landmark_class ?? "미탐지"}</td>
+                  <td className="px-4 py-3">{result.landmark_class ?? "Not detected"}</td>
                   <td className="px-4 py-3 text-right">
                     {formatNumber(result.landmark_confidence, 3)}
                   </td>

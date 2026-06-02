@@ -75,8 +75,8 @@ export default function HomePage() {
           한동 감성 인생샷 평가 모델
         </h1>
         <p className="mt-4 max-w-3xl text-base leading-7 text-slate-600 sm:text-lg">
-          사진을 여러 장 업로드하면 AI가 미적 완성도, 한동 감성 유사도,
-          랜드마크 포함 여부를 종합하여 Top 3 인생샷을 추천합니다.
+          사진을 여러 장 업로드하면 AI가 미적 완성도, Handong Similarity,
+          Landmark 포함 여부를 종합하여 Top 3 인생샷을 추천합니다.
         </p>
       </header>
 

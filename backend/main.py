@@ -4,11 +4,16 @@ import os
 import tempfile
 from pathlib import Path
 
-from fastapi import FastAPI, File, HTTPException, UploadFile
+from fastapi import FastAPI, File, Header, HTTPException, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 
 from inference import ALLOWED_EXTENSIONS, MAX_FILE_SIZE_BYTES, ModelFileMissingError, get_scorer
-from leaderboard import add_leaderboard_entries, get_top_leaderboard, init_leaderboard_db
+from leaderboard import (
+    add_leaderboard_entries,
+    clear_leaderboard,
+    get_top_leaderboard,
+    init_leaderboard_db,
+)
 
 
 def _parse_origins() -> list[str]:
@@ -41,9 +46,33 @@ def health() -> dict[str, str]:
     return {"status": "ok"}
 
 
+@app.get("/")
+def root() -> dict[str, object]:
+    return {
+        "status": "ok",
+        "service": "HGU Life-shot Scoring Model API",
+        "endpoints": ["GET /health", "GET /leaderboard", "DELETE /leaderboard", "POST /predict"],
+    }
+
+
 @app.get("/leaderboard")
 def leaderboard(limit: int = 3) -> dict[str, list[dict]]:
     return {"results": get_top_leaderboard(limit)}
+
+
+@app.delete("/leaderboard")
+def reset_leaderboard(x_reset_token: str | None = Header(default=None)) -> dict[str, int | str]:
+    expected_token = os.getenv("RESET_LEADERBOARD_TOKEN")
+    if not expected_token:
+        raise HTTPException(
+            status_code=403,
+            detail="RESET_LEADERBOARD_TOKEN 환경변수가 설정되어 있지 않습니다.",
+        )
+    if x_reset_token != expected_token:
+        raise HTTPException(status_code=401, detail="초기화 토큰이 올바르지 않습니다.")
+
+    deleted_count = clear_leaderboard()
+    return {"status": "cleared", "deleted_count": deleted_count}
 
 
 def _validate_upload(file: UploadFile) -> str:

@@ -94,6 +94,15 @@ npm run dev
 }
 ```
 
+### `DELETE /leaderboard`
+
+전체 사용자 점수 랭킹을 초기화합니다. 실수로 공개 초기화되는 것을 막기 위해 `RESET_LEADERBOARD_TOKEN` 환경변수와 같은 값을 `x-reset-token` 헤더로 보내야 합니다.
+
+```bash
+curl -X DELETE "https://백엔드주소/leaderboard" \
+  -H "x-reset-token: 설정한_토큰값"
+```
+
 ## 점수 계산
 
 ```text
@@ -156,6 +165,7 @@ NEXT_PUBLIC_API_URL=https://백엔드주소.onrender.com
 | frontend | `NEXT_PUBLIC_API_URL` | `http://localhost:8000` | FastAPI 백엔드 주소 |
 | backend | `CORS_ORIGINS` | `*` | 프론트엔드 요청을 허용할 Origin 목록 |
 | backend | `LEADERBOARD_DB_PATH` | `/app/data/leaderboard.sqlite3` | 전체 사용자 점수 랭킹 SQLite 저장 위치 |
+| backend | `RESET_LEADERBOARD_TOKEN` | `원하는_긴_비밀값` | `DELETE /leaderboard` 초기화 요청 보호 토큰 |
 
 ## 주의사항
 

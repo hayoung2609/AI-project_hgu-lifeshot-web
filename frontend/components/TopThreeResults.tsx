@@ -69,7 +69,7 @@ export default function TopThreeResults({ results }: TopThreeResultsProps) {
                   <div className="rounded-lg bg-slate-50 p-3">
                     <div className="flex items-center gap-1.5 font-semibold text-slate-600">
                       <MapPin className="h-4 w-4 text-leaf" aria-hidden />
-                      한동 감성
+                      Handong Similarity
                     </div>
                     <p className="mt-1 text-lg font-bold text-ink">
                       {scoreText(result.handong_similarity_score)}
@@ -78,9 +78,9 @@ export default function TopThreeResults({ results }: TopThreeResultsProps) {
                 </div>
                 <div className="rounded-lg border border-slate-200 p-3 text-sm">
                   <div className="flex flex-wrap items-center justify-between gap-2">
-                    <span className="font-semibold text-slate-600">랜드마크</span>
+                    <span className="font-semibold text-slate-600">Landmark</span>
                     <span className="font-bold text-ink">
-                      {result.landmark_class ?? "미탐지"}
+                      {result.landmark_class ?? "Not detected"}
                     </span>
                   </div>
                   <div className="mt-2 flex flex-wrap items-center justify-between gap-2 text-slate-600">

@@ -33,11 +33,11 @@ export default function ResultCard({ result, rank }: ResultCardProps) {
         </div>
         <div className="grid grid-cols-2 gap-2 text-sm">
           <div className="rounded-lg bg-slate-50 p-2">
-            <p className="text-xs font-semibold text-slate-500">NIMA 미적 점수</p>
+            <p className="text-xs font-semibold text-slate-500">NIMA Aesthetic Score</p>
             <p className="font-bold text-ink">{result.aesthetic_score.toFixed(1)}</p>
           </div>
           <div className="rounded-lg bg-slate-50 p-2">
-            <p className="text-xs font-semibold text-slate-500">한동 감성</p>
+            <p className="text-xs font-semibold text-slate-500">Handong Similarity</p>
             <p className="font-bold text-ink">
               {result.handong_similarity_score.toFixed(1)}
             </p>
@@ -45,12 +45,14 @@ export default function ResultCard({ result, rank }: ResultCardProps) {
         </div>
         <div className="flex items-center gap-2 rounded-lg border border-slate-200 p-2 text-sm">
           <MapPinned className="h-4 w-4 text-leaf" aria-hidden />
-          <span className="font-semibold text-slate-600">{result.landmark_class ?? "미탐지"}</span>
+          <span className="font-semibold text-slate-600">
+            {result.landmark_class ?? "Not detected"}
+          </span>
           <span className="ml-auto text-slate-500">+{result.landmark_bonus}</span>
         </div>
         {result.most_similar_images.length > 0 && (
           <p className="line-clamp-2 text-xs leading-5 text-slate-500">
-            유사 기준 사진: {result.most_similar_images.join(", ")}
+            Similar references: {result.most_similar_images.join(", ")}
           </p>
         )}
       </div>

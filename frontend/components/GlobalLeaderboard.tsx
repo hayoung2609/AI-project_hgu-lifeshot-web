@@ -67,19 +67,19 @@ export default function GlobalLeaderboard({ entries, error }: GlobalLeaderboardP
                   <dd className="mt-1 font-bold text-ink">{entry.aesthetic_score.toFixed(1)}</dd>
                 </div>
                 <div>
-                  <dt className="font-semibold text-slate-500">한동 감성</dt>
+                  <dt className="font-semibold text-slate-500">Handong Similarity</dt>
                   <dd className="mt-1 font-bold text-ink">
                     {entry.handong_similarity_score.toFixed(1)}
                   </dd>
                 </div>
                 <div>
-                  <dt className="font-semibold text-slate-500">랜드마크</dt>
+                  <dt className="font-semibold text-slate-500">Landmark</dt>
                   <dd className="mt-1 font-bold text-ink">
-                    {entry.landmark_class ?? "미탐지"}
+                    {entry.landmark_class ?? "Not detected"}
                   </dd>
                 </div>
                 <div>
-                  <dt className="font-semibold text-slate-500">보너스</dt>
+                  <dt className="font-semibold text-slate-500">Bonus</dt>
                   <dd className="mt-1 font-bold text-ink">+{entry.landmark_bonus}</dd>
                 </div>
               </dl>

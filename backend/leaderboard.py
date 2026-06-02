@@ -51,6 +51,7 @@ def add_leaderboard_entries(results: list[dict[str, Any]]) -> None:
     if not results:
         return
 
+    init_leaderboard_db()
     now = datetime.now(UTC).isoformat()
     rows = [
         (
@@ -107,3 +108,15 @@ def get_top_leaderboard(limit: int = 3) -> list[dict[str, Any]]:
         ).fetchall()
 
     return [dict(row) for row in rows]
+
+
+def clear_leaderboard() -> int:
+    init_leaderboard_db()
+
+    with _connect() as connection:
+        cursor = connection.execute("DELETE FROM leaderboard_entries")
+        connection.execute(
+            "DELETE FROM sqlite_sequence WHERE name = ?",
+            ("leaderboard_entries",),
+        )
+        return cursor.rowcount
